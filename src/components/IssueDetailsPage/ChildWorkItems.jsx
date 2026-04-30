@@ -1,13 +1,21 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { fetchEpicChildren } from "../../services/apiClient";
 import { priorityColors } from "../../utils/priorityColors";
 import { statusStyles } from "../../utils/statusStyles";
 
 const ChildWorkItems = ({ issueKey }) => {
+  const navigate = useNavigate();
   const [childWorkItems, setChildWorkItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
 useEffect(() => {
-  if (!issueKey) return;
+  if (!issueKey) {
+    setChildWorkItems([]);
+    setLoading(false);
+    return;
+  }
 
   // setChildWorkItems([
   //   {
@@ -43,10 +51,18 @@ useEffect(() => {
   const fetchItems = async () => {
     try {
       setLoading(true);
-      const response = await fetchChildWorkItems(); // Implement this API call in apiClient.js
-      setChildWorkItems(response.data || []);
+      setError("");
+      const response = await fetchEpicChildren(issueKey);
+      const items = Array.isArray(response)
+        ? response
+        : Array.isArray(response?.data)
+          ? response.data
+          : [];
+      setChildWorkItems(items);
     } catch (error) {
       console.error(error);
+      setError("Failed to load child work items");
+      setChildWorkItems([]);
     } finally {
       setLoading(false);
     }
@@ -55,8 +71,17 @@ useEffect(() => {
   fetchItems();
 }, [issueKey]);
 
-  // Don't render anything if loading or no child items
-  if (loading || childWorkItems.length === 0) return null;
+  if (loading) {
+    return <p className="text-sm text-gray-500">Loading child work items...</p>;
+  }
+
+  if (error) {
+    return <p className="text-sm text-red-600">{error}</p>;
+  }
+
+  if (childWorkItems.length === 0) {
+    return <p className="text-sm text-gray-500">No child work items found.</p>;
+  }
 
   return (
     <div className="overflow-x-auto">
@@ -80,8 +105,8 @@ useEffect(() => {
               </td>
               <td className="px-4 py-2">{item.summary}</td>
               <td className={`px-4 py-2 ${priorityColors[item.priority]}`}>{item.priority}</td>
-              <td className="px-4 py-2">{item.assignee || "Unassigned"}</td>
-              <td className="px-4 py-2">{item.reporter}</td>
+              <td className="px-4 py-2">{item.assigneeName || item.assignee || "Unassigned"}</td>
+              <td className="px-4 py-2">{item.reporterName || item.reporter || "Unassigned"}</td>
              
                 <td className="px-4 py-3">
                   <span

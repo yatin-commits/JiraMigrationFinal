@@ -8,9 +8,9 @@ import { UserProvider } from './UserContext.jsx'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      
+      <UserProvider>
         <App />
-      
+      </UserProvider>
     </BrowserRouter>
   </StrictMode>,
 )

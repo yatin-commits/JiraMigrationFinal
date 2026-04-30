@@ -25,10 +25,10 @@ const MetaItemWrapper = ({ children }) => (
 const IssueMetaDetails = ({ issue }) => {
   const [isOpen, setIsOpen] = useState(true);
 
-  const labels = issue.labels.filter((label)=>label);
-  const issueInList = issue.issueInList.filter((issueIn)=>issueIn);
-  const clients = issue.clients.filter((client)=>client);
-  const issueReasons = issue.issueReasons.filter((issueReason)=>issueReason)
+  const labels = (Array.isArray(issue?.labels) ? issue.labels : []).filter((label) => label);
+  const issueInList = (Array.isArray(issue?.issueInList) ? issue.issueInList : []).filter((issueIn) => issueIn);
+  const clients = (Array.isArray(issue?.clients) ? issue.clients : []).filter((client) => client);
+  const issueReasons = (Array.isArray(issue?.issueReasons) ? issue.issueReasons : []).filter((issueReason) => issueReason);
   return (
     <section className="border rounded-md p-4 bg-white">
       {/* Header */}
@@ -87,7 +87,7 @@ const IssueMetaDetails = ({ issue }) => {
             <MetaField
               label="Priority"
               value={issue?.priority}
-              style={`${priorityColors[issue.priority] || "text-gray-800"} font-medium`}
+              style={`${priorityColors[issue?.priority] || "text-gray-800"} font-medium`}
             />
           </MetaItemWrapper>
 

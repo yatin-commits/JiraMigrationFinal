@@ -19,6 +19,14 @@ const DownloadIcon = () => (
 const Attachments = ({ attachments = [] }) => {
   // pagination state
   const [currentPage, setCurrentPage] = useState(1);
+
+  const handleDownloadClick = (attachment) => {
+    console.log("Attachment download URL:", {
+      id: attachment?.id,
+      filename: attachment?.filename,
+      downloadUrl: attachment?.downloadUrl,
+    });
+  };
  
   if (!attachments.length) {
     return (
@@ -51,6 +59,7 @@ const Attachments = ({ attachments = [] }) => {
  
           <tbody className="divide-y">
             {paginatedAttachments.map((att) => (
+              
               <tr key={att.id} className="hover:bg-gray-50">
                 <td className="px-4 py-2 text-gray-700">
                   {att.uploadedBy || "—"}
@@ -70,7 +79,9 @@ const Attachments = ({ attachments = [] }) => {
                     <a
                       title="Download"
                       href={att.downloadUrl}
-                      download
+                      onClick={() => handleDownloadClick(att)}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="text-gray-500 hover:text-green-600"
                     >
                       <DownloadIcon />
