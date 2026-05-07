@@ -132,8 +132,10 @@ export default function ProjectIssuesPage() {
     <>
       <Navbar />
       <PageLayout title="">
-        <h1 className="px-6 pt-6 pb-5 text-2xl justify-center flex lg:text-4xl  sm:text-3xl font-bold tracking-tight text-gray-900">
-          Project Issues
+        <h1 className="px-6 pt-6 pb-5 text-xl justify-center flex lg:text-3xl  sm:text-3xl font-bold tracking-tight text-gray-900">
+          
+Browse Issue History
+
         </h1>
 
         {/* SEARCH */}
