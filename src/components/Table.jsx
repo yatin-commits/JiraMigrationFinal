@@ -33,23 +33,23 @@ export default function Table({ data, searchQuery, emptyMessage, issueTypeSortOr
 
   if (data.length === 0) {
     return (
-      <div className="text-center py-16 text-gray-400 text-sm">
+      <div className="text-center py-14 text-gray-500 text-sm">
         {emptyMessage || "No issues found"}
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm border-collapse">
+    <div className="overflow-x-auto rounded-xl border border-gray-200/70 bg-white/80 ring-1 ring-black/5 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+      <table className="min-w-full text-sm border-collapse bg-transparent">
         <thead>
-          <tr className="bg-gray-50 border-b border-gray-200">
-            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-28">
+          <tr className="bg-gray-50/80 border-b border-gray-200/70">
+            <th className="px-3 sm:px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-28">
               Issue Key
             </th>
             <th
               onClick={onTypeHeaderClick}
-              className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-28 cursor-pointer select-none"
+              className="px-3 sm:px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-28 cursor-pointer select-none"
             >
               <div className="inline-flex items-center gap-1">
                 <span>Type</span>
@@ -62,19 +62,19 @@ export default function Table({ data, searchQuery, emptyMessage, issueTypeSortOr
                 </span>
               </div>
             </th>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
+            <th className="px-3 sm:px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
               Summary
             </th>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-24">
+            <th className="px-3 sm:px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-24">
               Priority
             </th>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-32">
+            <th className="px-3 sm:px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-32">
               Status
             </th>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-36">
+            <th className="px-3 sm:px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-36">
               Assignee
             </th>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-36">
+            <th className="px-3 sm:px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-36">
               Reporter
             </th>
           </tr>
@@ -85,39 +85,39 @@ export default function Table({ data, searchQuery, emptyMessage, issueTypeSortOr
             <tr
               key={idx}
               onClick={() => navigate(`/issue/${row.issueKey}`)}
-              className="hover:bg-blue-50 cursor-pointer transition-colors group"
+              className="hover:bg-blue-50/60 cursor-pointer transition-colors group"
             >
-              <td className="px-4 py-3 font-semibold text-[#0747a6] group-hover:underline">
+              <td className="px-3 sm:px-4 py-3 font-semibold text-blue-700 group-hover:underline">
                 {row.issueKey}
               </td>
 
-              <td className="px-4 py-3 text-gray-600">
+              <td className="px-3 sm:px-4 py-3 text-gray-600">
                 {row.issueType || "—"}
               </td>
 
-              <td className="px-4 py-3 text-gray-800 max-w-sm">
+              <td className="px-3 sm:px-4 py-3 text-gray-800 max-w-sm">
                 <span className="line-clamp-2">
                   {highlightText(row.summary || "—", searchQuery)}
                 </span>
               </td>
 
               <td
-                className={`px-4 py-3 text-xs ${
+                className={`px-3 sm:px-4 py-3 text-xs ${
                   priorityColors[row.priority] || "text-gray-500"
                 }`}
               >
                 {row.priority || "—"}
               </td>
 
-              <td className="px-4 py-3">
+              <td className="px-3 sm:px-4 py-3">
                 <StatusBadge status={row.status} />
               </td>
 
-              <td className="px-4 py-3 text-gray-600">
+              <td className="px-3 sm:px-4 py-3 text-gray-600">
                 {row.assigneeName || "—"}
               </td>
 
-              <td className="px-4 py-3 text-gray-600">
+              <td className="px-3 sm:px-4 py-3 text-gray-600">
                 {row.reporterName || "—"}
               </td>
             </tr>

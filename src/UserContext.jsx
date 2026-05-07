@@ -1,7 +1,6 @@
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchIssueTypes, fetchProjects } from "./services/apiClient";
-
-export const UserContext = createContext(null);
+import { UserContext } from "./UserContextInstance";
 
 export const UserProvider = ({ children }) => {
 	const [projects, setProjects] = useState([]);

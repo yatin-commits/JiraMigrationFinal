@@ -7,15 +7,11 @@ import { statusStyles } from "../../utils/statusStyles";
 const ChildWorkItems = ({ issueKey }) => {
   const navigate = useNavigate();
   const [childWorkItems, setChildWorkItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
 useEffect(() => {
-  if (!issueKey) {
-    setChildWorkItems([]);
-    setLoading(false);
-    return;
-  }
+  if (!issueKey) return;
 
   // setChildWorkItems([
   //   {
@@ -84,22 +80,22 @@ useEffect(() => {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full border border-gray-300 rounded-md">
-        <thead className="bg-gray-100 text-sm text-gray-700">
+    <div className="overflow-x-auto rounded-lg border border-gray-200">
+      <table className="min-w-full border-collapse bg-white text-sm">
+        <thead>
           <tr>
-            <th className="px-4 py-2 text-left">Issue Key</th>
-            <th className="px-4 py-2 text-left">Summary</th>
-            <th className="px-4 py-2 text-left">Priority</th>
-            <th className="px-4 py-2 text-left">Assignee</th>
-            <th className="px-4 py-2 text-left">Reporter</th>
-            <th className="px-4 py-2 text-left">Status</th>
+            <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase">Issue Key</th>
+            <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase">Summary</th>
+            <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase">Priority</th>
+            <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase">Assignee</th>
+            <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase">Reporter</th>
+            <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
           </tr>
         </thead>
 
         <tbody className="text-sm text-gray-800">
           {childWorkItems.map((item) => (
-            <tr key={item.issueKey} className="border-t cursor-pointer transition-colors group" onClick={()=>{navigate(`/issue/${item.issueKey}`)}}>
+            <tr key={item.issueKey} className="border-t cursor-pointer transition-colors group hover:bg-blue-50" onClick={()=>{navigate(`/issue/${item.issueKey}`)}}>
               <td className="px-4 py-2 font-semibold text-[#0747a6] group-hover:underline whitespace-nowrap">
                 {item.issueKey}
               </td>
@@ -110,7 +106,7 @@ useEffect(() => {
              
                 <td className="px-4 py-3">
                   <span
-                    className={`inline-block px-3 py-1 ${statusStyles[item.status]} rounded-full font-medium`}
+                    className={`inline-flex items-center whitespace-nowrap px-3 py-1 rounded-full text-xs font-semibold ring-1 ring-inset ring-black/10 ${statusStyles[item.status] || "bg-gray-100 text-gray-600"}`}
                   >
                     {item.status}
                   </span>

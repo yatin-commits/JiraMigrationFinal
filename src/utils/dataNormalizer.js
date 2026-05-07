@@ -16,7 +16,6 @@
 //Deepali: Updated dataNormalizer to handle normalized rows with repeated headers
 
 export const dataNormalizer = (normalizedRows) => {
-  const issueMap = new Map();
   return normalizedRows.map(row => ({
     issueKey: row["Issue key"] || "",
     summary: row["Summary"] || "",
@@ -36,7 +35,6 @@ export const dataNormalizer = (normalizedRows) => {
     rootCause: row["Custom field (Root Cause)"] || "",
     issueReasons: row["Custom field (Issue Reason (RCA))"] || "",
     issueInList: row["Custom field (Issue in)"] || "",
-    attachments: row["Attachment"] || "",
     severity: row["Custom field (Severity)"] || "",
     startDate: row["Custom field (Start date)"] || "",
     actualStartDate : row["Custom field (Actual Start Date)"] || "",

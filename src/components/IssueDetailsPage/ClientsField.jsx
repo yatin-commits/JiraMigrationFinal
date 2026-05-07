@@ -25,5 +25,4 @@ export const ClientsField = ({ clients = [] }) => {
     </div>
   );
 };
- 
 export default ClientsField;

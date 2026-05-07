@@ -1,17 +1,42 @@
-import { useEffect, useState, useMemo, useContext } from "react";
+import { useEffect, useRef, useState, useMemo, useContext } from "react";
 import PageLayout from "../components/PageLayout";
 import Table from "../components/Table";
 import Pagination from "../components/Pagination";
 import Navbar from "../components/Navbar";
 import ProjectFilter from "../components/ProjectFilter";
 import IssueTypeFilter from "../components/IssueTypeFilter";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../UserContextInstance";
 import { fetchIssues } from "../services/apiClient";
 
 const PAGE_SIZE = 20;
 
+function FilterPill({ label, value, onClear, variant = "green" }) {
+  const styles = {
+    green: "bg-green-50/80 border-green-200 text-gray-700",
+    blue: "bg-blue-50/80 border-blue-200 text-gray-700",
+  };
+
+  return (
+    <div
+      className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium ring-1 ring-black/5 ${styles[variant]}`}
+    >
+      <span className="font-semibold">{label}:</span>
+      <span className="max-w-40 truncate">{value}</span>
+      <button
+        type="button"
+        onClick={onClear}
+        className="opacity-60 hover:opacity-100 rounded px-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20"
+        aria-label={`Clear ${label} filter`}
+      >
+        ×
+      </button>
+    </div>
+  );
+}
+
 export default function ProjectIssuesPage() {
   const { projects, issueTypes, loading: contextLoading, error: contextError } = useContext(UserContext);
+  const latestRequestId = useRef(0);
 
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -26,7 +51,8 @@ export default function ProjectIssuesPage() {
   const [showPrioritySort, setShowPrioritySort] = useState(false);
 
   const [page, setPage] = useState(1);
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(true);
+  const [issuesOnlyMode, setIssuesOnlyMode] = useState(false);
 
   const clearAllFilters = () => {
     setSelectedProject("");
@@ -35,36 +61,47 @@ export default function ProjectIssuesPage() {
     setPrioritySortOrder(null);
     setIssueTypeSortOrder(null);
     setPage(1);
+    setIssuesOnlyMode(false);
   };
 
   // Fetch issues when filters or page changes
   useEffect(() => {
     const loadIssues = async () => {
+      const requestId = ++latestRequestId.current;
+      const isLatestRequest = () => requestId === latestRequestId.current;
+
       try {
         setLoading(true);
         setError("");
+        const normalizedSearch = searchQuery.trim();
         
         const response = await fetchIssues({
           projectKey: selectedProject || undefined,
           issueType: selectedIssueType || undefined,
-          search: searchQuery || undefined,
+          search: normalizedSearch || undefined,
+          searchOnlyIssueKey: issuesOnlyMode || undefined,
           prioritySort: prioritySortOrder || undefined,
           page,
           pageSize: PAGE_SIZE,
         });
 
+        if (!isLatestRequest()) return;
+
         setIssues(response.data || []);
         setTotalIssues(response.total || 0);
       } catch (err) {
+        if (!isLatestRequest()) return;
         console.error("Error loading issues:", err);
         setError("Failed to load issues: " + err.message);
       } finally {
-        setLoading(false);
+        if (isLatestRequest()) {
+          setLoading(false);
+        }
       }
     };
 
     loadIssues();
-  }, [selectedProject, selectedIssueType, searchQuery, prioritySortOrder, page]);
+  }, [selectedProject, selectedIssueType, searchQuery, prioritySortOrder, page, issuesOnlyMode]);
 
   const hasActiveQuery = useMemo(
     () =>
@@ -91,67 +128,51 @@ export default function ProjectIssuesPage() {
     });
   }, [issues, issueTypeSortOrder]);
 
-  function FilterPill({ label, value, onClear, variant = "green" }) {
-    const styles = {
-      green: "bg-green-50 border-green-300 text-gray-700",
-      blue: "bg-blue-50 border-blue-300 text-gray-700",
-    };
-
-    return (
-      <div
-        className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-sm ${styles[variant]}`}
-      >
-        <span className="font-medium">{label}:</span>
-        <span className="max-w-[160px] truncate">{value}</span>
-        <button onClick={onClear} className="opacity-60 hover:opacity-100">
-          ×
-        </button>
-      </div>
-    );
-  }
-
   return (
     <>
       <Navbar />
       <PageLayout title="">
-        <h1 className="mt-6 mb-6 px-6 text-4xl font-semibold text-center mb-6 text-gray-900">
+        <h1 className="px-6 pt-6 pb-5 text-2xl justify-center flex lg:text-4xl  sm:text-3xl font-bold tracking-tight text-gray-900">
           Project Issues
         </h1>
 
         {/* SEARCH */}
         <div className="flex justify-center mb-6">
-          <div className="relative w-full max-w-2xl">
-            <input
-              type="text"
-              placeholder="Search by issue key, summary, description, assignee, reporter, type, status, priority..."
-              value={searchQuery}
-              onChange={e => {
-                setSearchQuery(e.target.value);
-                setPage(1);
-              }}
-              className="
-                w-full border border-gray-300 rounded-md
-                px-4 py-2 pl-10
-                text-sm text-gray-700 placeholder-gray-400
-                focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400
-              "
-            />
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-4.35-4.35m1.6-5.65a7.25 7.25 0 11-14.5 0 7.25 7.25 0 0114.5 0z"
-                />
-              </svg>
-            </span>
+          <div className="w-full max-w-3xl flex gap-3 items-start">
+            <div className="relative flex-1 mx-3">
+              <input
+                type="text"
+                placeholder="Search by issue key, summary, description, assignee, reporter, type, status, priority..."
+                value={searchQuery}
+                onChange={e => {
+                  setSearchQuery(e.target.value);
+                  setPage(1);
+                }}
+                className="
+                  w-full rounded-xl border border-gray-200/70 bg-white/80 px-4 py-2 pl-10
+                  text-sm text-gray-800 placeholder-gray-400 shadow-sm ring-1 ring-black/5
+                  backdrop-blur
+                  focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20 focus-visible:border-blue-400
+                "
+              />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 21l-4.35-4.35m1.6-5.65a7.25 7.25 0 11-14.5 0 7.25 7.25 0 0114.5 0z"
+                  />
+                </svg>
+              </span>
+            </div>
+          
           </div>
         </div>
 
@@ -160,10 +181,12 @@ export default function ProjectIssuesPage() {
           <button
             onClick={() => setShowFilters(p => !p)}
             className="
-              bg-green-100 border border-green-300
-              text-gray-700 px-3 py-1.5
-              rounded-md text-sm font-medium
-              hover:bg-green-200
+              bg-white/80 border border-gray-200/70
+              text-gray-900 px-3 py-1.5
+              rounded-lg text-sm font-semibold shadow-sm ring-1 ring-black/5
+              backdrop-blur supports-[backdrop-filter]:bg-white/60
+              hover:bg-gray-50/80
+              focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20
             "
           >
             ☰ Filter
@@ -173,28 +196,28 @@ export default function ProjectIssuesPage() {
             <button
               onClick={() => setShowPrioritySort(p => !p)}
               className={`
-                px-3 py-1.5 border rounded-md
-                text-sm font-semibold text-gray-700
+                px-3 py-1.5 border rounded-lg shadow-sm
+                text-sm font-semibold text-gray-900 ring-1 ring-black/5
                 ${
                   prioritySortOrder
-                    ? "bg-blue-50 border-blue-300"
-                    : "bg-white border-gray-300"
+                    ? "bg-blue-50/80 border-blue-200 hover:bg-blue-100/70"
+                    : "bg-white/80 border-gray-200/70 hover:bg-gray-50/80"
                 }
-                hover:bg-blue-100
+                focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20
               `}
             >
               Priority {prioritySortOrder === "desc" ? "↓" : prioritySortOrder === "asc" ? "↑" : "⬍"}
             </button>
 
             {showPrioritySort && (
-              <div className="absolute right-4 top-full mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-md z-20">
+              <div className="absolute right-4 top-full mt-2 w-52 bg-white/90 border border-gray-200/70 rounded-xl shadow-md ring-1 ring-black/5 z-20 overflow-hidden backdrop-blur supports-[backdrop-filter]:bg-white/70">
                 <button
                   onClick={() => {
                     setPrioritySortOrder("desc");
                     setShowPrioritySort(false);
                     setPage(1);
                   }}
-                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50/80"
                 >
                   Priority: High → Low
                 </button>
@@ -204,7 +227,7 @@ export default function ProjectIssuesPage() {
                     setShowPrioritySort(false);
                     setPage(1);
                   }}
-                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50/80"
                 >
                   Priority: Low → High
                 </button>
@@ -214,7 +237,7 @@ export default function ProjectIssuesPage() {
                       setPrioritySortOrder(null);
                       setShowPrioritySort(false);
                     }}
-                    className="w-full text-left px-3 py-2 text-sm text-blue-600 hover:bg-gray-100"
+                    className="w-full text-left px-3 py-2 text-sm text-blue-700 hover:bg-gray-50/80"
                   >
                     Clear sorting
                   </button>
@@ -272,7 +295,7 @@ export default function ProjectIssuesPage() {
             )}
             <button
               onClick={clearAllFilters}
-              className="text-sm text-blue-600 hover:underline"
+              className="text-sm font-medium text-blue-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20 rounded"
             >
               Clear all filters
             </button>

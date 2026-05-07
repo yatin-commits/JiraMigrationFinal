@@ -9,12 +9,12 @@ import ChildWorkItems from "./ChildWorkItems";
 const LeftPanel = ({ issue, comments, attachments}) => {
   const navigate = useNavigate()
   return (
-    <div className="col-span-9 bg-white rounded-lg shadow p-6 overflow-y-auto space-y-6">
+    <div className="lg:col-span-8 rounded-xl border border-gray-200/70 bg-white/80 shadow-sm ring-1 ring-black/5 p-4 sm:p-6 lg:overflow-y-auto space-y-6 backdrop-blur supports-[backdrop-filter]:bg-white/60">
 
       {/*Back to Home Page*/}
       <button
         onClick={() => navigate("/")}
-        className="text-sm text-blue-800 font-medium hover:underline"
+        className="inline-flex items-center gap-1 text-sm text-blue-800 font-medium hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30 rounded"
       >
        ← Back To Issues
       </button>
@@ -32,7 +32,7 @@ const LeftPanel = ({ issue, comments, attachments}) => {
             | Parent :{" "}
             <button
               onClick={() => navigate(`/issue/${issue.parentKey}`)}
-              className="text-blue-800 font-medium hover:underline"
+              className="text-blue-800 font-medium hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30 rounded"
             >
               {issue.parentKey}
             </button>

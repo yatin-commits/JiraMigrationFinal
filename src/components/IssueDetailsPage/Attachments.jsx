@@ -46,21 +46,21 @@ const Attachments = ({ attachments = [] }) => {
  
   return (
     <section>
-      <div className="overflow-x-auto border border-gray-200 rounded-lg">
-        <table className="min-w-full text-sm text-left">
-          <thead className="bg-gray-50 text-gray-600 font-light">
+      <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+        <table className="min-w-full text-sm text-left border-collapse">
+          <thead>
             <tr>
-              <th className="px-4 py-2 font-medium">Attached by</th>
-              <th className="px-4 py-2 font-medium">Attachment name</th>
-              <th className="px-4 py-2 font-medium">Date added</th>
+              <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase">Attached by</th>
+              <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase">Attachment name</th>
+              <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase">Date added</th>
               <th className="px-4 py-2 text-center"></th>
             </tr>
           </thead>
  
-          <tbody className="divide-y">
+          <tbody className="divide-y divide-gray-100">
             {paginatedAttachments.map((att) => (
               
-              <tr key={att.id} className="hover:bg-gray-50">
+              <tr key={att.id} className="hover:bg-gray-50 transition-colors">
                 <td className="px-4 py-2 text-gray-700">
                   {att.uploadedBy || "—"}
                 </td>
@@ -69,7 +69,7 @@ const Attachments = ({ attachments = [] }) => {
                   {att.filename}
                 </td>
  
-                <td className="px-4 py-2 text-gray-800">
+                <td className="px-4 py-2 text-gray-700">
                   {formatDate(att.uploadedAt)}
                 </td>
  
@@ -104,7 +104,7 @@ const Attachments = ({ attachments = [] }) => {
           <button
             onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
             disabled={currentPage === 1}
-            className="px-3 py-1 border rounded text-gray-600 disabled:opacity-40"
+            className="px-3 py-1.5 border border-gray-300 rounded-md bg-white text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20"
           >
             Previous
           </button>
@@ -114,7 +114,7 @@ const Attachments = ({ attachments = [] }) => {
               setCurrentPage((p) => Math.min(p + 1, totalPages))
             }
             disabled={currentPage === totalPages}
-            className="px-3 py-1 border rounded text-gray-600 disabled:opacity-40"
+            className="px-3 py-1.5 border border-gray-300 rounded-md bg-white text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20"
           >
             Next
           </button>

@@ -12,7 +12,7 @@ export default function SearchInput({ value, onChange }) {
           value={value}
           onChange={onChange}
           placeholder="Search by issue key, summary, reporter or assignee..."
-          className="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-md outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-gray-700 placeholder-gray-400"
+          className="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-md bg-white text-gray-700 placeholder-gray-400 shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20 focus-visible:border-blue-400"
         />
       </div>
     </div>

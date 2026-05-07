@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function IssueKeyFilter({
   value,
@@ -9,17 +9,10 @@ export default function IssueKeyFilter({
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  //Open dropdown when user types
-  useEffect(() => {
-    if (value) {
-      setIsOpen(true);
-    } else {
-      setIsOpen(false);
-    }
-  }, [value]);
+  const open = isOpen && Boolean(value);
 
   return (
-    <div className="relative flex flex-col gap-1 w-64">
+    <div className="relative flex flex-col gap-1 w-full sm:w-64">
       <label className="text-sm font-medium text-gray-700">
         Issue Key
       </label>
@@ -47,7 +40,7 @@ export default function IssueKeyFilter({
         "
       />
 
-      {isOpen && (
+      {open && (
         <div className="absolute top-full mt-1 w-full bg-white border rounded-md shadow z-10 max-h-48 overflow-auto">
           {options.length > 0 ? (
             options.map((key) => (

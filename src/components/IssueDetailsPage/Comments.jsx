@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { formatDate} from "../../utils/formatDate";
 import { parseJiraMarkup } from "../../utils/parseJiraMarkup";
  
@@ -17,24 +17,24 @@ const Comments = ({ comments }) => {
  
   if (!comments.length) {
     return (
-      <div className="mt-6 text-gray-500 text-sm">
+      <div className="mt-2 text-gray-500 text-sm">
         No comments available
       </div>
     );
   }
  
   return (
-    <div className="mt-6">
+    <div>
       {/* Comments list */}
       <div className="space-y-4">
         {comments.slice(0,4).map((comment, idx) => (
           <div
             key={idx}
-            className="flex gap-4 p-4 bg-white border border-gray-200 rounded-lg shadow-sm"
+            className="flex gap-4 p-4 bg-white border border-gray-200 rounded-lg"
           >
             {/* Profile circle */}
             <div className="shrink-0">
-              {<button className="w-10 h-10 rounded-full bg-blue-600 text-white font-semibold flex items-center justify-center">
+              {<button type="button" className="w-10 h-10 rounded-full bg-blue-600 text-white font-semibold flex items-center justify-center ring-1 ring-white/20">
                 {getInitials(comment.userName)}
               </button> }
             </div>
@@ -61,17 +61,25 @@ const Comments = ({ comments }) => {
         ))}
         {
           comments.length>4 && !showMoreComments &&
-          (<button className="w-full p-2 border-2 rounded border-gray-500 text-sm" onClick={()=>{setShowMoreComments(true)}}>Show More Comments</button>)
+          (
+            <button
+              type="button"
+              className="w-full p-2 border border-gray-300 rounded-md bg-gray-50 text-sm font-semibold text-gray-700 hover:bg-gray-100 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20"
+              onClick={()=>{setShowMoreComments(true)}}
+            >
+              Show More Comments
+            </button>
+          )
         }
         {
           showMoreComments && comments.slice(4).map((comment, idx) => (
           <div
             key={idx}
-            className="flex gap-4 p-4 bg-white border border-gray-200 rounded-lg shadow-sm"
+            className="flex gap-4 p-4 bg-white border border-gray-200 rounded-lg"
           >
             {/* Profile circle */}
             <div className="shrink-0">
-              {<button className="w-10 h-10 rounded-full bg-blue-600 text-white font-semibold flex items-center justify-center">
+              {<button type="button" className="w-10 h-10 rounded-full bg-blue-600 text-white font-semibold flex items-center justify-center ring-1 ring-white/20">
                 {getInitials(comment.userName)}
               </button> }
             </div>
@@ -98,7 +106,15 @@ const Comments = ({ comments }) => {
         ))}
  
         {showMoreComments && (
-          (<button className="w-full p-2 border-2 rounded border-gray-500 text-sm" onClick={()=>{setShowMoreComments(false)}}>Show Less</button>)
+          (
+            <button
+              type="button"
+              className="w-full p-2 border border-gray-300 rounded-md bg-gray-50 text-sm font-semibold text-gray-700 hover:bg-gray-100 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20"
+              onClick={()=>{setShowMoreComments(false)}}
+            >
+              Show Less
+            </button>
+          )
         )}
       </div>
     </div>

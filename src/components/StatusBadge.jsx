@@ -47,7 +47,7 @@ const statusStyles = {
 export default function StatusBadge({ status }) {
   const style = statusStyles[status] || "bg-gray-100 text-gray-500"
   return (
-    <span className={`inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full ${style}`}>
+    <span className={`inline-flex items-center whitespace-nowrap text-xs font-semibold px-2.5 py-0.5 rounded-full ring-1 ring-inset ring-black/10 ${style}`}>
       {status || "—"}
     </span>
   )
