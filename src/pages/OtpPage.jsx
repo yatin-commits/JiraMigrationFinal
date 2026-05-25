@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { isLoggedIn, sendOtp, verifyOtp } from "../services/apiClient";
+import {
+  isLoggedIn,
+  saveUserEmail,
+  sendOtp,
+  verifyOtp,
+} from "../services/apiClient";
  
 export default function OtpPage() {
   const navigate = useNavigate();
@@ -70,6 +75,7 @@ export default function OtpPage() {
 
     try {
       await verifyOtp(email, enteredOtp);
+      saveUserEmail(email);
       navigate(from, { replace: true });
     } catch (err) {
       setError(err.message || "OTP verification failed");

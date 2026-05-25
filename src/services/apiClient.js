@@ -6,6 +6,11 @@ export const getToken = () => localStorage.getItem("jwt_token");
 export const removeToken = () => localStorage.removeItem("jwt_token");
 export const isLoggedIn = () => !!getToken();
 
+export const saveUserEmail = (email) =>
+  localStorage.setItem("user_email", email);
+export const getUserEmail = () => localStorage.getItem("user_email");
+export const removeUserEmail = () => localStorage.removeItem("user_email");
+
 // ── Generic fetch wrapper ────────────────────────────────────
 const fetchAPI = async (endpoint, options = {}) => {
   const token = getToken();
