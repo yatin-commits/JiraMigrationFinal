@@ -84,14 +84,14 @@ export const verifyOtp = async (email, otp) => {
 
 // ── Protected APIs ───────────────────────────────────────────
 
-export const fetchProjects = async () => fetchAPI("/api/projects");
+export const fetchProjects = async () => fetchAPI("/projects");
 
-export const fetchIssueTypes = async () => fetchAPI("/api/issue-types");
+export const fetchIssueTypes = async () => fetchAPI("/issue-types");
 
 export const fetchIssueKeys = async (query = "") => {
   const params = new URLSearchParams();
   if (query) params.append("query", query);
-  return fetchAPI(`/api/issue-keys?${params.toString()}`);
+  return fetchAPI(`/issue-keys?${params.toString()}`);
 };
 
 export const fetchIssues = async (filters = {}) => {
@@ -109,14 +109,14 @@ export const fetchIssues = async (filters = {}) => {
   params.append("page", page);
   params.append("pageSize", pageSize);
 
-  return fetchAPI(`/api/issues?${params.toString()}`);
+  return fetchAPI(`/issues?${params.toString()}`);
 };
 
 export const fetchIssueDetail = async (issueKey) =>
-  fetchAPI(`/api/issues/${issueKey}`);
+  fetchAPI(`/issues/${issueKey}`);
 
 export const fetchEpicChildren = async (issueKey) =>
-  fetchAPI(`/api/issues/${issueKey}/children`);
+  fetchAPI(`/issues/${issueKey}/children`);
 
 export const getAttachmentDownloadUrl = (attachmentId) =>
-  `${API_BASE_URL}/api/attachments/${attachmentId}/download`;
+  `${API_BASE_URL}/attachments/${attachmentId}/download`;
