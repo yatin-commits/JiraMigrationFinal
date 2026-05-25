@@ -21,7 +21,8 @@ export default function OtpPage() {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const email = location.state?.email;
-  const from = location.state?.from?.pathname || "/";
+  const fromPath = location.state?.from?.pathname || "/";
+const from = fromPath.startsWith("/") ? fromPath : "/";
 
   useEffect(() => {
     if (isLoggedIn()) {
