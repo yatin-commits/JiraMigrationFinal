@@ -20,13 +20,28 @@ const Attachments = ({ attachments = [] }) => {
   // pagination state
   const [currentPage, setCurrentPage] = useState(1);
 
-  const handleDownloadClick = (attachment) => {
-    console.log("Attachment download URL:", {
-      id: attachment?.id,
-      filename: attachment?.filename,
-      downloadUrl: attachment?.downloadUrl,
-    });
-  };
+const handleDownloadClick = (e, att) => {
+    e.preventDefault(); // ← default link behaviour rok do
+
+    const token = localStorage.getItem("jwt_token");
+
+    fetch(att.downloadUrl, {
+        headers: {
+            Authorization: `Bearer ${token}`  // ← JWT header
+        }
+    })
+    .then(res => res.blob())
+    .then(blob => {
+        // File download karo
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = att.filename;
+        link.click();
+        window.URL.revokeObjectURL(url);
+    })
+    .catch(err => console.error("Download failed:", err));
+};
  
   if (!attachments.length) {
     return (
@@ -78,14 +93,12 @@ const Attachments = ({ attachments = [] }) => {
                     {/* Download */}
                     <a
                       title="Download"
-                      href={att.downloadUrl}
-                      onClick={() => handleDownloadClick(att)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-gray-500 hover:text-green-600"
-                    >
-                      <DownloadIcon />
-                    </a>
+    href={att.downloadUrl}
+    onClick={(e) => handleDownloadClick(e, att)}  // ← e bhi pass karo
+    className="text-gray-500 hover:text-green-600"
+>
+    <DownloadIcon />
+</a>
                   </div>
                 </td>
               </tr>

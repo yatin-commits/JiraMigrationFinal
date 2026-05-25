@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchIssueTypes, fetchProjects } from "./services/apiClient";
+import { fetchIssueTypes, fetchProjects, isLoggedIn } from "./services/apiClient";
 import { UserContext } from "./UserContextInstance";
 
 export const UserProvider = ({ children }) => {
@@ -12,6 +12,10 @@ export const UserProvider = ({ children }) => {
 		const loadInitialData = async () => {
 			try {
 				setLoading(true);
+				if (!isLoggedIn()) {
+					setLoading(false);
+					return;
+				}
 				const [projectsData, issueTypesData] = await Promise.all([
 					fetchProjects(),
 					fetchIssueTypes(),
