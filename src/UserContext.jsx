@@ -20,8 +20,18 @@ export const UserProvider = ({ children }) => {
 					fetchProjects(),
 					fetchIssueTypes(),
 				]);
-				setProjects(projectsData);
-				setIssueTypes(issueTypesData);
+				const normalizedProjects = Array.isArray(projectsData?.data)
+					? projectsData.data
+					: Array.isArray(projectsData)
+						? projectsData
+						: [];
+				const normalizedIssueTypes = Array.isArray(issueTypesData?.data)
+					? issueTypesData.data
+					: Array.isArray(issueTypesData)
+						? issueTypesData
+						: [];
+				setProjects(normalizedProjects);
+				setIssueTypes(normalizedIssueTypes);
 			} catch (err) {
 				console.error("Error loading initial data:", err);
 				setError("Error loading projects and issue types: " + err.message);
